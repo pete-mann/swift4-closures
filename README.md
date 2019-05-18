@@ -150,6 +150,7 @@ names.sort(by: { (a: String, b: String) -> Bool in
 })
 ```
 Is the same as
+```
 names.sort { (a, b) in
     a < b
 }
