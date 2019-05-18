@@ -1,0 +1,384 @@
+<h1 id="swift4closureshigherorderfunctions">Swift 4 Closures &amp; Higher Order Functions</h1>
+
+<h2 id="introduction">Introduction</h2>
+
+<p>I have been learning Swift 4 for about 10 weeks, it is one of the most enjoyable languages I have learnt recently. The
+    most exciting thing about learning Swift are optionals, type inference, guard statements and lastly <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">Function Type</code>
+    which makes it really easy to pass functions and closures around. </p>
+
+<p>I enjoyed learning optionals and I could talk about them all day, but this article is about functional programming in
+    Swift 4, so let's get busy. </p>
+
+<h2 id="prerequisites">Pre-requisites</h2>
+
+<p>This interactive guide is intended for readers with intermediate to advanced programming knowledge. Because this guide
+    will progress into passing closures as parameters and using higher order functions, this is a segue to functional
+    programming using Swift 4. It's important to have at least basic knowledge of programming in Swift in order to
+    understand these concepts. </p>
+
+<p>You may want to skip straight to the examples, that is fine. However the information before the examples is important,
+    some of the topics that I'll cover first are considered more advanced than the examples.</p>
+
+<p>Why are there no comments? Personally I find lots of comments within the code make it difficult to read. So I have left
+    the comments to the paragraphs within this guide.</p>
+
+<h2 id="closures">Closures</h2>
+
+<p>A Closure is a block of code, the term block being of programming nomenclature that means source code grouped together.
+    In Swift 4 the block of code is wrapped in curly braces <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">{}</code>. The term Closure is similar to the term block in C or
+    Lambda in other programming languages such as Java.</p>
+
+<h2 id="closurescope">Closure Scope</h2>
+
+<p>Closure scope is captured from the context at the time of declaration. So even though closures can be passed around a
+    Swift application in parameters, the closure still has access to the variables in the scope of which the closure is
+    defined.</p>
+
+<p>Additionally the closure will have also have access to the scope in which it is used. So if we get a closure from class
+    <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">SwiftClosure</code> and use it in class <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">SwiftScope</code> what will the closures scope be? To answer that question, let's look at
+    the following example. This may be a rather advanced example, since we haven't even got to basic higher order functions,
+    but keep this in mind as it is really important if you want to pass closures. Getting this wrong can be challenging to
+    debug.</p>
+
+<p>Great example but what is going on, and what is so important about this? Let's dive in. As you can see there are two
+    classes <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">SwiftClosure</code> and <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">SwiftScope</code>. I'm going to list out their roles and responsibilities.</p>
+
+<h4 id="swiftscope">SwiftScope</h4>
+
+<ul>
+    <li>Stores a reference to the <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">SwiftClosure</code> class</li>
+
+    <li>Contains a private array of <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">names</code>, these names will be accessed using the closure</li>
+
+    <li>Contains the <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">run()</code> method, which is used to start the example and get the print message </li>
+</ul>
+
+<h4 id="swiftclosure">SwiftClosure</h4>
+
+<ul>
+    <li>Contains the closure, the closure is declared in this class. Therefore it has access to the <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">SwiftClosure</code> class
+        using <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">self</code>.</li>
+
+    <li>Contains a private array of <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">scopedTypes</code>, these are types of the character names that are in the <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">SwiftScope</code> class.</li>
+</ul>
+
+<h4 id="explanation">Explanation</h4>
+
+<p>The <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">run()</code> method gets a closure from the <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">SwiftClosure</code> class. Now this closure has access to the members of the
+    <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">SwiftClosure</code> class, as you can see these are being printed to the output from this line
+    <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">self.scopedTypes[tuple.offset]</code>. So because the closure is defined in the <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">SwiftClosure</code> class it can access the scope
+    of that class. Again this is really important to understand especially when the closure method may be many lines long. </p>
+
+<pre style="background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;padding:4px;"><code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">class SwiftScope {
+
+    private let swiftClosure: SwiftClosure
+
+    let names = ["Pete", "Chewbacca", "George", "Anakin", "Rai", "Darth Vader", "Kylo"]
+
+    init(swiftClosure: SwiftClosure) {
+        self.swiftClosure = swiftClosure
+    }
+
+    func run() {
+        names.enumerated().forEach(self.swiftClosure.getClosure())
+    }
+
+}
+
+class SwiftClosure {
+
+    private let scopedTypes = ["Fan", "Wookie", "Film maker", "Aprentice Jedi", "Jedi", "Dark Lord", "Dark Warrior"]
+
+    func getClosure() -&gt; ((offset: Int, element: String)) -&gt; Void {
+        return { (tuple) -&gt; Void in
+            print(tuple.element, self.scopedTypes[tuple.offset])
+        }
+    }
+
+}
+
+let swiftScope = SwiftScope(swiftClosure: SwiftClosure())
+
+swiftScope.run()
+</code></pre>
+
+<p>Output:</p>
+
+<pre style="background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;padding:4px;"><code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">Pete Fan
+Chewbacca Wookie
+George Film maker
+Anakin Aprentice Jedi
+Rai Jedi
+Darth Vader Dark Lord
+Kylo Dark Warrior
+</code></pre>
+
+<h2 id="typesignatures">Type Signatures</h2>
+
+<p>Functions and closures both adhere to the same type in Swift 4. They are therefore of the same type and this type in <br />
+    Swift 4 is called <a href="https://docs.swift.org/swift-book/ReferenceManual/Types.html#ID449">Function Type</a>. The exact type
+    of <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">Function Type</code> depends on the signature type of the function or closure being declared. This is important to
+    understand because different function signatures will have different <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">Function Types</code> and will not be compatible.
+    We can therefore write the following code to declare a variable with a Function (or closure) type, the semantics of the
+    type indicate that the <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">Function Type</code> has no parameters and returns nothing. Therefore it is possible to assign a
+    function or closure of the same signature <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">Function Type</code> to this variable in the future.</p>
+
+<pre style="background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;padding:4px;"><code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">var closure: () -&gt; Void
+</code></pre>
+
+<p>Is the same as </p>
+
+<pre style="background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;padding:4px;"><code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">var closure: () -&gt; ()
+</code></pre>
+
+<p>The reason the second example works is because in Swift <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">()</code> is the same as <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">Void</code>. This is true because in Swift,
+    <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">Void</code> is actually an empty tuple. If you don't know what a tuple is, <a href="https://docs.swift.org/swift-book/ReferenceManual/Types.html#ID448">A tuple type is a comma-separated list of types,
+        enclosed in parentheses.</a> Any more explanation is
+    out of the scope of this article. However it is important to understand because we will be using the <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">Tuple Type</code> in
+    this guide.</p>
+
+<p>Should you find that either of these examples creates an error in Swift Playgrounds, then the following example may
+    help clarify why.</p>
+
+<pre style="background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;padding:4px;"><code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">var closure: (() -&gt; Void)?
+</code></pre>
+
+<p>Note that the actual type is wrapped in parenthesis with the question mark at the end so that we can simply illustrate
+    a variable with a Function Type and a value of nil. This is of course because of Swifts optional. For the purpose of
+    illustrating the same thing without the optional variable, here is the same closure declared inside a function. The
+    reason it is optional is because you can create uninitialised variables in the root of the REPL. </p>
+
+<h2 id="usingtypealias">Using <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">typealias</code></h2>
+
+<p>Using <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">typealias</code> it is possible to define a type or function signature type. With this <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">typealias</code> defined it can then
+    be used to replace the more verbose definition of a closure by replacing the type with the <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">typealias</code>. Of course using
+    <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">typealias</code> is not required, and if you find that it is less readable then you don't have use it.</p>
+
+<pre style="background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;padding:4px;"><code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">typealias Sorter = (String, String) throws -&gt; Bool
+</code></pre>
+
+<p>Now when declaring a closure we can replace the type with the <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">typealias</code>, this improves readability.</p>
+
+<pre style="background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;padding:4px;"><code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">let sortByLength: Sorter = { (l, r) -&gt; Bool in
+    return l.count &lt; r.count
+}
+</code></pre>
+
+<h2 id="optionalparenthesis">Optional Parenthesis</h2>
+
+<p>Both of these examples will work and produce the same result. Note in the second example the <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">.sort()</code> parenthesis are
+    missing, also note that the argument label <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">by:</code> is also missing. This is because the last parameter or in this case
+    the only parameter is a Function Type, then the parenthesis are not required. Again this can be seen in the second
+    example.</p>
+
+<p>Let's create some names. Note that names is a <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">var</code>, this is because <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">.sort()</code> modifies the array, unlike <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">.sorted()</code>
+    which returns a new sorted array and does not modify the original array.
+    Verbose sort example</p>
+
+<pre style="background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;padding:4px;"><code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">names.sort(by: { (a: String, b: String) -&gt; Bool in
+    return a &lt; b
+})
+</code></pre>
+
+<p>Is the same as</p>
+
+<pre style="background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;padding:4px;"><code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">names.sort { (a, b) in
+    a &lt; b
+}
+</code></pre>
+
+<p>Is the same as </p>
+
+<pre style="background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;padding:4px;"><code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">names.sort { $0 &lt; $1 }
+</code></pre>
+
+<p>And lastly sort can be called like this as well.</p>
+
+<pre style="background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;padding:4px;"><code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">names.sort(by: &lt;)
+</code></pre>
+
+<h2 id="impliedtypes">Implied Types</h2>
+
+<p>Let's again look at the previous example. All of the examples are the same, however we did not mention in the previous
+    section that the second of these examples does not include the argument type of <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">String</code> for each argument, nor does it
+    include the return type of <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">Bool</code>. This is because of the usage of implied types in the first example. Both argument
+    and return types are implied.</p>
+
+<h2 id="implicitreturn">Implicit Return</h2>
+
+<p>Again look at the previous example, the second example does not include a <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">return</code> keyword. That is because when there
+    is only one line in the closure body the <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">return</code> keyword is optional.</p>
+
+<h2 id="shorthandarguments">Shorthand Arguments</h2>
+
+<p>Before we move on, let's again look at the third example of previous examples. There are no arguments <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">(a, b)</code>, why?
+    Notice how the arguments <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">a</code> and <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">b</code> are replaced with <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">$0</code> and <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">$1</code>. The omission of the arguments is known as
+    shorthand arguments, note that the order of arguments is represented by the number it is assigned, eg. <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">a</code> = <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">$0</code>.</p>
+
+<h2 id="higherorderfunctions">Higher Order Functions</h2>
+
+<p>Higher order functions are functions that accept a function or closure as a parameter and, sometimes return a function
+    to the caller. See the examples section for a list of functions that will be covered.</p>
+
+<p>If this hurts your brain at this point, keep reading because everything will become much clearer. We will work through
+    some basic higher order examples that will prepare you for your journey to becoming more confident using functional
+    programming in Swift 4.</p>
+
+<h2 id="examples">Examples</h2>
+
+<p>This document will attempt to provide some very basic examples of some of the common Swift 4 methods of the
+    <a href="https://docs.swift.org/swift-book/ReferenceManual/Types.html#ID450">Array Type</a>. Throughout this document I may be
+    using implied argument and return types, as this results in less code. Writing less code should not be the main purpose
+    behind using implied types, that is because less code does not equal code that is easy to understand. This might be a
+    preference of yours or a particular style of code that is required in your project. </p>
+
+<p>This is by no means a comprehensive list of the higher order functions that can be called on <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">Array</code>, these are just
+    some of the most used in my experience. </p>
+
+<p>Throughout these examples, I will be using the parameter name of <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">element</code>. Remember since we are using the
+    <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">names</code> array, the <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">element</code> parameter is always referring to a string. Therefore we can perform <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">String</code> functions on
+    the <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">element</code> parameter. I like to use the parameter name of <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">element</code> when looping over an array, since it is indeed
+    an element of an array. Using parameter names like <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">name</code> in this instance would also work, however I use the
+    convention of <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">element</code> because often the <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">element</code> parameter will be an <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">Object</code>, not a <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">String</code>.</p>
+
+<p>The document will also provide some more advanced implementations within the examples. We will be looking at these
+    methods:</p>
+
+<ul>
+    <li><code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">Array.sort()</code></li>
+
+    <li><code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">Array.sorted()</code></li>
+
+    <li><code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">Array.forEach()</code></li>
+
+    <li><code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">Array.map()</code></li>
+
+    <li><code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">Array.reduce()</code></li>
+
+    <li><code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">Array.filter()</code></li>
+
+    <li><code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">Array.compactMap()</code></li>
+
+    <li><code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">Array.first()</code></li>
+
+    <li><code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">Array.firstIndex()</code></li>
+</ul>
+
+<h2 id="sorted">Sorted</h2>
+
+<p>Using the <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">.sorted()</code> method of array we can sort an array using a closure and chain another closure afterwards. This is
+    called method chaining, this is possible because <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">.sorted()</code> returns an array that we can call <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">.sorted()</code> on again.</p>
+
+<pre style="background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;padding:4px;"><code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">var sorted = names.sorted(by: &lt;).sorted(by: sortByLength)
+</code></pre>
+
+<p>Wait. What is the reference to <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">sortByLength</code>? Remember that we discussed <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">typealias</code> earlier? Well we actually created
+    a <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">softByLength</code> closure that we can apply here. That code again is:</p>
+
+<pre style="background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;padding:4px;"><code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">let sortByLength: Sorter = { (l, r) -&gt; Bool in
+    return l.count &lt; r.count
+}
+</code></pre>
+
+<h2 id="foreach">Foreach</h2>
+
+<p>The <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">.forEach()</code> method is used here to iterate over an array. The <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">forEach</code> method iterates over a copy of the array.</p>
+
+<pre style="background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;padding:4px;"><code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">names.forEach { (element) in
+    print(element)
+}
+</code></pre>
+
+<p>It's also worth mentioning that the <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">.enumerated()</code> method of array can be used to access the index <em>and</em> element of an
+    array, which I have found is often far more useful than simply accessing the element as aforementioned. The Swift 4
+    documentation states that <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">.enumerated()</code> "Returns a sequence of pairs (<em>n</em>, <em>x</em>), where <em>n</em> represents a consecutive
+    integer starting at zero and <em>x</em> represents an element of the sequence." Remember tuples? A
+    <strong>sequence of pairs (<em>n</em>, <em>x</em>)</strong> is a tuple! Therefore we can write the following code, again omitting the parenthesis
+    for the .<code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">forEach()</code> method, and here the closure will receive the sequence of pairs (tuple).  </p>
+
+<pre style="background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;padding:4px;"><code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">names.enumerated().forEach { (tuple) in
+    print(tuple.offset, tuple.element)
+}
+</code></pre>
+
+<h2 id="map">Map</h2>
+
+<p>Map is used to convert the contents of an array, the term map means to map it to something else. Map returns a new copy
+    of the array. It does not modify the original array. The closure returns an <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">Int</code> because <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">element.count</code> <em>is</em> and
+    <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">Int</code>. If we were returning a <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">String</code>, we should obviously change the return to <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">String</code>.</p>
+
+<pre style="background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;padding:4px;"><code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">names.map { (element) -&gt; Int in
+    element.count
+}
+</code></pre>
+
+<p>This code will produce an array of <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">Int</code> where each element is the number of characters in each name.</p>
+
+<h2 id="reduce">Reduce</h2>
+
+<p>Reduce is used to reduce the array to one element. Reduce can be more difficult to understand than <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">.filter()</code> and
+    <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">.map()</code>, however I find that using the following parameter names of <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">accumulator</code>, and <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">current</code> (from the JavaScript
+    Mozilla Development Network (MDN)) really helps to understand what is going on inside the <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">reduce()</code> operation. The
+    empty string inside the <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">reduce("")</code> method call is the initialised value for the <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">accumulator</code> parameter, this must be
+    the same type as the closure return type, ie the closure will eventually return the <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">accumulator</code> at then end of the
+    operation.</p>
+
+<pre style="background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;padding:4px;"><code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">names.reduce("") { (accumulator: String, current: String) -&gt; String in
+    accumulator + "\(current.uppercased()), "
+}
+</code></pre>
+
+<p>Will produce a string of uppercase names separated by a comma.</p>
+
+<h2 id="filter">Filter</h2>
+
+<p>The <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">.filter()</code> method is used to filter an array. Moreover, by returning <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">true</code> the output of this operation will
+    include the value of the current <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">element</code>, in this instance, all elements containing a lowercase <strong>e</strong> will be
+    included in the final result. Because the <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">Function Type</code> passed into the .<code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">filter()</code> method has a return type of
+    <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">Bool</code> it is impossible to return anything other than the value of the current element in the array while filtering. I
+    hear you saying, what if I want to modify while filtering? I've got you covered, check out the <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">.compactMap()</code> method.</p>
+
+<pre style="background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;padding:4px;"><code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">names.filter { (element) -&gt; Bool in
+    element.contains("e")
+}
+</code></pre>
+
+<h2 id="compactmap">CompactMap</h2>
+
+<p>Compact map is useful when trying to map and filter in the same operation, we could do this with <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">map()</code> and chain the
+    <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">.filter()</code> method on the map result, however as you know this will cause the code to loop over the array twice.  </p>
+
+<p>So if you ever need to filter and map, use <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">.compactMap()</code>. In the below example we are getting the initial of each
+    name in the <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">names</code> array. Then we are returning a <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">Tuple Type</code> which includes the name matching the filter and the
+    initial for that name.</p>
+
+<pre style="background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;padding:4px;"><code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">names.compactMap { (element) -&gt; (String, String)? in
+    let initial = element.prefix(1).uppercased()
+    return initial == "A" ? (initial, element) : nil
+}
+</code></pre>
+
+<h2 id="first">First</h2>
+
+<p>The <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">.first()</code> method is something I use often. For example if I just want to test that something exists in an array,
+    or I know that my array contains unique elements I may not care about fetching more than the first result. </p>
+
+<pre style="background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;padding:4px;"><code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">names.first { (element) in
+    element.contains("e")
+}
+</code></pre>
+
+<h2 id="firstindex">FirstIndex</h2>
+
+<p>Often we will need to find the index of an element, this can not be done with <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">.first()</code> since first will return the
+    element itself. </p>
+
+<pre style="background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;padding:4px;"><code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">names.firstIndex { (element) in
+    element.contains("Chewbacca")
+}
+</code></pre>
+
+<h2 id="summaryofbasichigherorderfunctions">Summary of Basic Higher Order Functions</h2>
+
+<p>If you're still reading, great. By now you should have a good understanding of the syntax of the <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">Function Type</code>. Armed
+    with this knowledge of the higher order functions available to you on <code style="padding: 3px;background-color: #555; color: #fff;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">Array</code>.</p>
